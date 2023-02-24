@@ -1,0 +1,109 @@
+{% extends "user/home_layout.html" %}
+
+{% block content %}
+  <div class="content" style="background-color: white; padding:3em">
+    
+    <div class="row g-5">
+        <div class="col-md-8">
+        <h3 class="pb-4 mb-4 fst-italic border-bottom">
+            {{blog_deets.userdeets.user_fullname}}
+        </h3>
+        {% with c=get_flashed_messages() %}
+            {% if c %}
+                {% for msg in c %}
+                <div class="alert alert-info">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <article>
+                <h5> {{blog_deets.all_comments|count}} Comments</h5>
+                <p>{{blog_deets.topic_title}}</p>
+            </article>
+            <hr>
+            <div class="comment">
+                {% if blog_deets.all_comments %}
+                    {% for c in blog_deets.all_comments: %}
+                    <p><i>
+                        {{c.comment_text}}
+                    </i>
+                    </p>
+                    <pre>
+                        by {{c.commentby.user_fullname}} on {{c.comment_date}}
+                    </pre>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% if session.get('user') !=None %}
+                <p id="feedback"></p>
+                    <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token()}}">
+                    <div class="form-group row">
+                        <label class="col-md-4">Say Something about this post</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" id="comment"></textarea>
+                        </div>
+                        <button class="btn btn-secondary mt-2" id="btncomment">Post</button>
+                    </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+        <div class="position-sticky" style="top: 2rem;">
+        
+
+            <div class="p-4">
+            {% if session.get('user') !=None %}
+            <a href="/newtopic" class="btn btn-warning mb-3">Post New Topic</a>
+            {% endif %}
+
+            <h4 class="fst-italic">Archives</h4>
+            <ol class="list-unstyled mb-0">
+                <li><a href="#">Performing Artistes</a></li>
+                <li><a href="#">Partner Hotels</a></li>
+                <li><a href="#">Event Managers</a></li>
+                <li><a href="#">Bids for Contracts</a></li>
+                
+            </ol>
+            </div>
+
+        
+        </div>
+        </div>
+    </div>
+
+
+
+  </div>
+  <script src="{{url_for('static', filename='assets/jquery.min.js')}}"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $('#btncomment').click(function(){
+           var msg= $('#comment').val()
+           var userid = "{{session.get('user')}}"
+           var topic = "{{blog_deets.topic_id}}"
+           var data2send = "message="+msg+"&userid="+userid+"&topicid="+topic;
+        //    make an AJAX call syntax- $.ajax({key:"value",key:"value"})
+        $.ajax({
+            url:"/sendcomment/", /*This is like the action, the route*/
+            data:data2send,
+            type:"GET", /*The method*/
+            dataType:"text", /*the type of response expected eg. string*/
+            success:function(response){
+                // $('#feedback').html(response)
+                // $('#feedback').addClass("alert alert-success")
+                $('.comment').append(response)
+                var current_count = parseInt($('#counter').text())+1
+                $('#counter').text(current_count)
+                $('#comment').val('')
+
+
+            },
+            error:function(errmessage){
+                console.log(errmessage)
+            }
+
+        })
+        })
+
+    })
+  </script>
+{% endblock %}

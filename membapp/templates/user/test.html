@@ -1,0 +1,27 @@
+{% extends "user/home_layout.html" %}
+  
+{% block content %}
+<div class="content" style="background-color: white;padding:3em">
+
+    {{data}}
+    <br>
+
+    {{data.Party_deets.party_name }}
+
+    
+
+
+
+
+    
+ {#{% for p,d in data %}
+<p> The fullname is : {{ p.user_fullname }} and the party is: {{d.party_name}}</p>
+ {% endfor %}#}
+
+ {#{% for d in data %}
+<p>The fullname is:{{ d[0] }} and the party is:{{d[1]}}</p>
+ {% endfor %}#}
+
+
+ </div>
+{% endblock %}

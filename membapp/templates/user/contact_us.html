@@ -1,0 +1,60 @@
+{% extends "user/home_layout.html"%}
+  
+{% block content %}
+
+<!--This flash messaeg usually comes as a list, hence, a loop would be needed to display just the message, otherwise, it is -->
+
+<div class="content" style="background-color: white;padding:3em">
+  <h3>Contact Us</h3>
+  {% set done = get_flashed_messages() %}
+  {% if done: %}
+    {% for d in done%}
+    <span class="alert alert-success"> <!-- ATTENTION NEEDED HERE--> </span>
+    {% endfor %}
+  {% endif %}
+
+  <form action="" method="post" enctype="multipart/form-data">
+    {{contact.confirm_email}} {{contact.confirm_email.errors}}
+    <!--Create a hidden token to protect the routes-->
+    {{ contact.csrf_token }}  
+
+    {{contact.screenshot}} {{contact.screenshot.errors}}
+
+    <!-- Another method is : contact.hidden_tag()  -->> 
+    <div class="mb-3 form-group row">
+       
+        {{ contact.email.label(class_='col-md-2') }}
+    
+    <div class="col-md-6">
+         {{ contact.email(class_='form-control border-success') }}
+    </div>
+
+    {% if contact.email.error %}
+    {% for email_error in contact.email.errors  %}
+        <div class="col-md-3">
+            <span class="alert alert-danger">
+                {{msg_error}} </span>
+        </div>
+        {% endfor %}
+        {% endif %}
+        </div>
+    <div class="mb-3 form-group row">
+        {{contact.message.label}}
+        {{contact.message(class_='form-control form-control-lg')}}
+    </div>
+
+    <div class="mb-3 form-group row">
+        {{contact.submit(class_='btn btn-primary')}}
+    </div>
+
+
+
+
+  </form>
+
+  
+
+
+ </div>
+ 
+{% endblock %}
